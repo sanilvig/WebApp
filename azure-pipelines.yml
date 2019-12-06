@@ -20,6 +20,7 @@ steps:
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
+      **\*Selenium.dll*
       **\*test*.dll
       !**\*TestAdapter.dll
       !**\obj\**
