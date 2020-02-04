@@ -6,41 +6,25 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
-  buildConfiguration: 'Release'
+  developmentBranchName: 'master' 
 
-steps:
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: 'TestService/CommonYml'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build Web App'
-  inputs:
-    command: build
-    projects: '**/*.csproj' 
-
-
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - Release'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration Release'
-    projects: '**/*.csproj'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Publish the project - Release '
-  inputs:
-    command: 'publish'
-    projects: '**/*.csproj'
-    publishWebProjects: false
-    arguments: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
-    zipAfterPublish: true
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: drop
-
+stages:
+    - stage: 'Build'
+      displayName: 'Build the $(apiService)'
+      jobs:
+          - job: 'Build'
+            displayName: 'Build job'
+            pool:
+              vmImage: 'ubuntu-latest' 
+           
+              
+            steps:  
+            - template: 'CommonBuildPipeline_dev.yml@templates'
 
