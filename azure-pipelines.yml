@@ -65,10 +65,19 @@ stages:
 
           - job: 'BuildUAT'
             displayName: 'Build for UAT' 
-            condition: and(succeededOrFailed(),eq(variables['SourceBranchName'],variables['masterBranchName']))
-            
+            condition: |
+              and
+              (
+                succeededOrFailed(),
+                eq(variables['Build.SourceBranchName'], variables['masterBranchName'])
+              )
+
             steps:
-              - script: echo Build for UAT!!!
+              - script: echo build on UAT succeeded!!!
+
+
+            
+            
 
   
 
