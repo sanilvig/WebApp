@@ -6,6 +6,7 @@
 
 trigger:
 - develop
+- master
 
 pr:
 - master
