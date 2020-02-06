@@ -7,6 +7,9 @@ trigger:
 - develop
 - feature/*
 
+pr:
+- master
+
 pool:
   vmImage: 'ubuntu-latest'
 
