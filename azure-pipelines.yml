@@ -6,8 +6,6 @@
 
 trigger:
 - develop
-
-pr:
 - master
 
 variables:
