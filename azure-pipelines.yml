@@ -5,7 +5,6 @@
 
 trigger:
 - develop
-- feature/*
 
 pr:
 - master
