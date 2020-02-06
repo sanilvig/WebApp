@@ -9,11 +9,28 @@ trigger:
 pr:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 variables:
-  buildConfiguration: 'Release'
+  developmentBranchName: 'master' 
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: 'TestService/CommonYml'
+
+stages:
+    - stage: 'Build'
+      displayName: 'Build the $(apiService)'
+      jobs:
+          - job: 'Build'
+            displayName: 'Build job'
+            pool:
+              vmImage: 'ubuntu-latest' 
+           
+              
+            steps:  
+            - template: 'CommonBuildPipeline_dev.yml@templates'
+
 
 steps:
 
@@ -45,3 +62,4 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: drop
+
