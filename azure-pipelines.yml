@@ -31,35 +31,38 @@ stages:
             steps:  
             - template: 'CommonBuildPipeline_dev.yml@templates'
 
+            - task: DotNetCoreCLI@2
+              displayName: 'Build Web App'
+              inputs:
+                command: build
+                projects: '**/*.csproj' 
+              
+            
+            - task: DotNetCoreCLI@2
+              displayName: 'Build the project - Release'
+              inputs:
+                command: 'build'
+                arguments: '--no-restore --configuration Release'
+                projects: '**/*.csproj'
 
-steps:
+            - task: DotNetCoreCLI@2
+              displayName: 'Publish the project - Release '
+              inputs:
+                command: 'publish'
+                projects: '**/*.csproj'
+                publishWebProjects: false
+                arguments: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
+                zipAfterPublish: true
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build Web App'
-  inputs:
-    command: build
-    projects: '**/*.csproj' 
+            - task: PublishBuildArtifacts@1
+              displayName: 'Publish Artifact'
+              inputs:
+                PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                ArtifactName: drop
+
+  
 
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - Release'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration Release'
-    projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish the project - Release '
-  inputs:
-    command: 'publish'
-    projects: '**/*.csproj'
-    publishWebProjects: false
-    arguments: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
-    zipAfterPublish: true
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: drop
 
