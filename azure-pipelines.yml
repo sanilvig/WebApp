@@ -8,11 +8,9 @@ trigger:
 - develop
 - master
 
-pr:
-- master
-
 variables:
-  developmentBranchName: 'master' 
+  masterBranchName: 'master' 
+  developmentBranchName: 'develop'
 
 resources:
   repositories:
@@ -24,14 +22,17 @@ stages:
     - stage: 'Build'
       displayName: 'Build the $(apiService)'
       jobs:
-          - job: 'Build'
+          - job: 'BuildDev'
             displayName: 'Build job'
+            condition: eq(variables['Build.SourceBranchName'],variables['developmentBranchName'])
+             
             pool:
               vmImage: 'ubuntu-latest' 
            
               
             steps:  
             - template: 'CommonBuildPipeline_dev.yml@templates'
+                      
 
             - task: DotNetCoreCLI@2
               displayName: 'Build Web App'
@@ -61,6 +62,22 @@ stages:
               inputs:
                 PathtoPublish: '$(Build.ArtifactStagingDirectory)'
                 ArtifactName: drop
+
+          - job: 'BuildUAT'
+            displayName: 'Build for UAT' 
+            condition: |
+              and
+              (
+                succeededOrFailed(),
+                eq(variables['Build.SourceBranchName'], variables['masterBranchName'])
+              )
+
+            steps:
+              - script: echo build on UAT succeeded!!!
+
+
+            
+            
 
   
 
