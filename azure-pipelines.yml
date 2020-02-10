@@ -8,6 +8,14 @@ trigger:
 - develop
 - master
 
+pr:
+  branches:
+    include:
+    - master
+    - develop
+    exclude:
+    - feature/*
+
 variables:
   masterBranchName: 'master' 
   developmentBranchName: 'develop'
