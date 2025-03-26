@@ -1,0 +1,75 @@
+name: Build Web app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-to-qa:
+    runs-on: ubuntu-latest
+    environment:
+      name: QA
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Show Commit Message
+        run: |
+          printf "Commit Message: %s\n" "${{ github.event.head_commit.message }}"
+        
+      - name: List Files in Directory
+        run: ls -l
+
+      - name: Upload Config Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: common-env
+          path: .
+
+  
+  
+  deploy-to-stage:
+   
+    runs-on: ubuntu-latest
+    environment:
+      name: STAGING
+    steps:
+      - name: Manual Approval Required
+        uses: trstringer/manual-approval@v1
+        timeout-minutes: 600
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: sanilvig
+          minimum-approvals: 1
+          issue-title: "Deploying to stage from QA"
+          issue-body: "Please approve or deny the deployment"
+
+      
+
+      - name: Deploy ENV ConfigMap to STAGING
+        run: |
+          echo "Deploying config to STAGE"
+ 
+
+  deploy-to-prod:
+ 
+    runs-on: ubuntu-latest
+    environment:
+      name: PROD
+    steps:
+      - name: Manual Approval Required
+        uses: trstringer/manual-approval@v1
+        timeout-minutes: 600
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: sanilvig
+          minimum-approvals: 1
+          issue-title: "Deploying to prod from STAGE"
+          issue-body: "Please approve or deny the deployment"
+
+     
+
+      - name: Update kubeconfig for EKS (PROD)
+        run: |
+          echo "Updating kubeconfig for PROD"
+        
+
